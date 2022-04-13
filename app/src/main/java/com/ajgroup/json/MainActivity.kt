@@ -1,5 +1,6 @@
 package com.ajgroup.json
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fetchAllData()
+        setupView()
 //        val myJSONObject = JSONObject()
 //        myJSONObject.put("AppName","Sulka")
 //        myJSONObject.put("Date",2022)
@@ -63,7 +65,13 @@ class MainActivity : AppCompatActivity() {
 //        Log.d("Kumra 4", myJSONArray.getJSONArray("list_ac").getJSONObject(3).getString("SKU"))
     }
 
-private fun fetchAllData(){
+    private fun setupView() {
+        binding.fab.setOnClickListener {
+            startActivity(Intent(this@MainActivity,RegisterActivity::class.java))
+        }
+    }
+
+    private fun fetchAllData(){
     ApiClient.instace.getAllCar()
         .enqueue(object  : retrofit2.Callback<List<GetAllCarResponseItem>>{
             override fun onResponse(

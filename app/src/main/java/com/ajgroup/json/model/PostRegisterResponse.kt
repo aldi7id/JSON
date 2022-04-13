@@ -2,7 +2,9 @@ package com.ajgroup.json.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class PostRegisterResponse(
     @SerializedName("createdAt")
     val createdAt: String? = null,
