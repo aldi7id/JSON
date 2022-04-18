@@ -3,14 +3,13 @@ package com.ajgroup.json
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.ajgroup.json.databinding.ActivityMainBinding
-import com.ajgroup.json.model.GetAllCarResponseItem
+import com.ajgroup.json.model.GetMovieDiscovery
+import com.ajgroup.json.model.Result
 import com.ajgroup.json.service.ApiClient
-import org.json.JSONArray
-import org.json.JSONObject
+import com.ajgroup.json.service.ApiClientMovie
 import retrofit2.Call
 import retrofit2.Response
 
@@ -72,32 +71,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchAllData(){
-    ApiClient.instace.getAllCar()
-        .enqueue(object  : retrofit2.Callback<List<GetAllCarResponseItem>>{
+    ApiClientMovie.instace.gettDiscovery()
+        .enqueue(object  : retrofit2.Callback<GetMovieDiscovery>{
+            //            override fun onResponse(
+//                call: Call<List<GetMovieDiscovery>>,
+//                response: Response<List<GetMovieDiscovery>>
+//            ) {
+//               val body = response.body()
+//                val code = response.code()
+//                if (code == 200){
+//                    showList(body)
+//                    binding.pbLoading.visibility = View.GONE
+//                    Toast.makeText(this@MainActivity, "Data Berhasil Di Load", Toast.LENGTH_SHORT).show()
+//                } else{
+//                    binding.pbLoading.visibility = View.GONE
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<List<GetAllCarResponseItem>>, t: Throwable) {
+//                binding.pbLoading.visibility = View.GONE
+//                Toast.makeText(this@MainActivity, "Data Tidak Berhasil Di Load", Toast.LENGTH_SHORT).show()
+//            }
             override fun onResponse(
-                call: Call<List<GetAllCarResponseItem>>,
-                response: Response<List<GetAllCarResponseItem>>
+                call: Call<GetMovieDiscovery>,
+                response: Response<GetMovieDiscovery>
             ) {
-               val body = response.body()
+                val body = response.body()
                 val code = response.code()
-                if (code == 200){
-                    showList(body)
+                                if (code == 200){
+                                    body?.results?.let { showList(it) }
                     binding.pbLoading.visibility = View.GONE
                     Toast.makeText(this@MainActivity, "Data Berhasil Di Load", Toast.LENGTH_SHORT).show()
                 } else{
                     binding.pbLoading.visibility = View.GONE
                 }
+
             }
 
-            override fun onFailure(call: Call<List<GetAllCarResponseItem>>, t: Throwable) {
-                binding.pbLoading.visibility = View.GONE
-                Toast.makeText(this@MainActivity, "Data Tidak Berhasil Di Load", Toast.LENGTH_SHORT).show()
+            override fun onFailure(call: Call<GetMovieDiscovery>, t: Throwable) {
+                TODO("Not yet implemented")
             }
-            })
+
+        })
 }
-    private fun showList(data: List<GetAllCarResponseItem>?){
+    private fun showList(data: List<Result>){
         val adapter  = MainAdapter(object : MainAdapter.OnClickListener {
-            override fun onClickItem(data: GetAllCarResponseItem) {
+            override fun onClickItem(data: Result) {
             }
         })
         adapter.submitData(data)

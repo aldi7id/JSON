@@ -1,5 +1,6 @@
 package com.ajgroup.json
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,24 +8,26 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ajgroup.json.databinding.ItemContentBinding
-import com.ajgroup.json.model.GetAllCarResponseItem
+import com.ajgroup.json.model.GetMovieDiscovery
+import com.ajgroup.json.model.Result
+import com.bumptech.glide.Glide
 
 class MainAdapter(private val onItemClick: OnClickListener) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
-    private val diffCallback = object : DiffUtil.ItemCallback<GetAllCarResponseItem>(){
+    private val diffCallback = object : DiffUtil.ItemCallback<Result>(){
         override fun areItemsTheSame(
-            oldItem: GetAllCarResponseItem,
-            newItem: GetAllCarResponseItem
-        ): Boolean = oldItem.id == newItem.id
+            oldItem: Result,
+            newItem: Result): Boolean  = oldItem.id == newItem.id
 
         override fun areContentsTheSame(
-            oldItem: GetAllCarResponseItem,
-            newItem: GetAllCarResponseItem
-        ): Boolean = oldItem.hashCode() == newItem.hashCode()
+            oldItem: Result,
+            newItem: Result): Boolean = oldItem.hashCode() == newItem.hashCode()
     }
+    private val IMAGE_BASE ="https://image.tmdb.org/t/p/w500/"
+
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    fun submitData(value: List<GetAllCarResponseItem>?) = differ.submitList(value)
+    fun submitData(value: List<Result>) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainAdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -39,10 +42,11 @@ class MainAdapter(private val onItemClick: OnClickListener) : RecyclerView.Adapt
     override fun getItemCount(): Int = differ.currentList.size
 
     inner class ViewHolder(private val binding: ItemContentBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: GetAllCarResponseItem){
+        fun bind(data: Result){
             binding.apply {
-                tvJudul.text = data.name
-                tvPrice.text = data.price.toString()
+                tvJudul.text = data.originalTitle
+                tvPrice.text = data.releaseDate
+                Glide.with(binding.root).load(IMAGE_BASE+data.posterPath).into(ivHeader)
                 root.setOnClickListener {
                     onItemClick.onClickItem(data)
                 }
@@ -50,7 +54,7 @@ class MainAdapter(private val onItemClick: OnClickListener) : RecyclerView.Adapt
         }
     }
     interface OnClickListener {
-        fun onClickItem(data: GetAllCarResponseItem)
+        fun onClickItem(data: Result)
     }
 
 }
